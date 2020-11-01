@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_form_type
+field_name: field_form_type
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: single
+      label: 'Enter a single record'
+    -
+      value: list
+      label: 'Enter a list of records at the same place on the same date'
+    -
+      value: multiplace
+      label: 'Enter records at multiple places on the same date'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

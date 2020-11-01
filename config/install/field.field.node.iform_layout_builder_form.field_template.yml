@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_template
+    - node.type.iform_layout_builder_form
+id: node.iform_layout_builder_form.field_template
+field_name: field_template
+entity_type: node
+bundle: iform_layout_builder_form
+label: Template
+description: 'Tick to make this form available as a template to use as a starting point when building other survey forms.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

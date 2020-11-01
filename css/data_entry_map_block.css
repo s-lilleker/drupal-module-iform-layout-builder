@@ -1,0 +1,11 @@
+/* Map on Drupal layout builder preview must not overlay block config sidebar. */
+.layout-builder-block #map-container {
+  z-index: 0;
+  background: silver url(../images/black-white-outline-world-map-no-background.svg);
+  /* Turn off the contents */
+}
+.layout-builder-block #map-container #map * {
+  display: none;
+}
+
+/*# sourceMappingURL=data_entry_map_block.css.map */

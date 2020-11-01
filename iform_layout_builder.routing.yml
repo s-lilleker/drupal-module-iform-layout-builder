@@ -1,0 +1,7 @@
+iform_layout_builder.copy_form_template:
+  path: '/iform_layout_builder/template/copy'
+  defaults:
+    _form:  '\Drupal\iform_layout_builder\Form\CopyTemplateForm'
+    _title: 'Copy a form layout template'
+  requirements:
+    _permission: 'indicia data admin'

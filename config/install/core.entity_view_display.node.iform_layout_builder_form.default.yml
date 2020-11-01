@@ -1,0 +1,96 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.iform_layout_builder_form.field_survey_id
+    - field.field.node.iform_layout_builder_form.layout_builder__layout
+    - node.type.iform_layout_builder_form
+  module:
+    - iform_layout_builder
+    - layout_builder
+    - layout_discovery
+    - options
+    - user
+third_party_settings:
+  layout_builder:
+    allow_custom: true
+    enabled: true
+    sections:
+      -
+        layout_id: layout_onecol
+        layout_settings:
+          label: 'Form area'
+        components:
+          a8f8701d-d17d-454d-9e22-86d805c73996:
+            uuid: a8f8701d-d17d-454d-9e22-86d805c73996
+            region: content
+            configuration:
+              id: data_entry_date_picker_block
+              label: 'Indicia data entry date picker block'
+              provider: iform_layout_builder
+              label_display: visible
+              option_label: ''
+              option_allowVagueDates: ''
+              context_mapping: {  }
+            additional: {  }
+            weight: 0
+          9bc2742e-04aa-4c0b-b6eb-3e4df41e4428:
+            uuid: 9bc2742e-04aa-4c0b-b6eb-3e4df41e4428
+            region: content
+            configuration:
+              id: data_entry_spatial_ref_block
+              label: 'Indicia map spatial ref input block'
+              provider: iform_layout_builder
+              label_display: '0'
+              option_label: 'Map reference'
+              context_mapping: {  }
+            additional: {  }
+            weight: 1
+          fe467564-6281-4bc4-999c-572ad1146d0f:
+            uuid: fe467564-6281-4bc4-999c-572ad1146d0f
+            region: content
+            configuration:
+              id: data_entry_map_block
+              label: 'Indicia map species input block'
+              provider: iform_layout_builder
+              label_display: '0'
+              context_mapping: {  }
+            additional: {  }
+            weight: 2
+        third_party_settings: {  }
+      -
+        layout_id: layout_onecol
+        layout_settings:
+          label: Footer
+        components:
+          068fb760-803d-423f-af2c-8823fd0c7db4:
+            uuid: 068fb760-803d-423f-af2c-8823fd0c7db4
+            region: content
+            configuration:
+              id: data_entry_submit_buttons_block
+              label: 'Indicia data entry submit buttons block'
+              provider: iform_layout_builder
+              label_display: '0'
+              context_mapping: {  }
+            additional: {  }
+            weight: 0
+        third_party_settings: {  }
+id: node.iform_layout_builder_form.default
+targetEntityType: node
+bundle: iform_layout_builder_form
+mode: default
+content:
+  field_survey_id:
+    weight: 101
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  layout_builder__layout: true

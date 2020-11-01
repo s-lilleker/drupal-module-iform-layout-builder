@@ -1,0 +1,14 @@
+block.base:
+  version: VERSION
+  css:
+    component:
+      css/blocks.css: {}
+block.attrblockform:
+  version: VERSION
+  js:
+    js/attrblockform.js: {}
+block.data_entry.map:
+  version: VERSION
+  css:
+    component:
+      css/data_entry_map_block.css: {}

@@ -1,0 +1,9 @@
+.iform-layout-builder-block-info {
+  display: none;
+}
+
+.layout-builder-block .iform-layout-builder-block-info {
+  display: block;
+}
+
+/*# sourceMappingURL=blocks.css.map */

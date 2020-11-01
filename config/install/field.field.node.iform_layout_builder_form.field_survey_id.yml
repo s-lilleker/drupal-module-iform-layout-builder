@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_survey_id
+    - node.type.iform_layout_builder_form
+id: node.iform_layout_builder_form.field_survey_id
+field_name: field_survey_id
+entity_type: node
+bundle: iform_layout_builder_form
+label: 'Survey Dataset'
+description: 'Survey dataset this form is linked to. Choose -Create new survey dataset- to create a new one.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: 0
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

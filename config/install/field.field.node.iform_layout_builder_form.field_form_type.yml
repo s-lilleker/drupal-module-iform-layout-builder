@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_form_type
+    - node.type.iform_layout_builder_form
+  module:
+    - options
+id: node.iform_layout_builder_form.field_form_type
+field_name: field_form_type
+entity_type: node
+bundle: iform_layout_builder_form
+label: 'Form type'
+description: 'Choose which type of form to build.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
