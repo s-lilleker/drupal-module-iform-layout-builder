@@ -27,9 +27,10 @@ class DataEntrySpeciesSingleBlock extends IndiciaControlBlockBase {
         '#description' => 'Tip shown beneath the control.',
       ],
       'scratchpadListId' => [
-        '#title' => 'Species list to pre-load',
-        '#description' => 'List of species available for selection when the form loads.',
+        '#title' => 'Limit species available to custom list',
+        '#description' => 'List of species available for selection.',
         '#type' => 'select',
+        '#empty_option' => '-All species available-',
         'populateOptions' => [
           'table' => 'scratchpad_list',
           'valueField' => 'id',
