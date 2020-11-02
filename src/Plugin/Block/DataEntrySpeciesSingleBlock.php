@@ -26,6 +26,16 @@ class DataEntrySpeciesSingleBlock extends IndiciaControlBlockBase {
         '#title' => 'Help text',
         '#description' => 'Tip shown beneath the control.',
       ],
+      'scratchpadListId' => [
+        '#title' => 'Species list to pre-load',
+        '#description' => 'List of species available for selection when the form loads.',
+        '#type' => 'select',
+        'populateOptions' => [
+          'table' => 'scratchpad_list',
+          'valueField' => 'id',
+          'captionField' => 'title',
+        ],
+      ],
     ];
   }
 
@@ -53,7 +63,9 @@ class DataEntrySpeciesSingleBlock extends IndiciaControlBlockBase {
       'label' => \lang::get('occurrence:taxa_taxon_list_id'),
       'extraParams' => $readAuth + ['taxon_list_id' => hostsite_get_config_value('iform', 'master_checklist_id', 0)],
     ];
-    // Taxon
+    if (!empty($blockConfig['option_scratchpadListId'])) {
+      $ctrlOptions['extraParams']['scratchpad_list_id'] = $blockConfig['option_scratchpadListId'];
+    }
     unset($configFieldList['taxonListId']);
     foreach ($configFieldList as $opt => $cfg) {
       if (isset($blockConfig["option_$opt"])) {
