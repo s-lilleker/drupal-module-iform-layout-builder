@@ -247,7 +247,7 @@ function iform_layout_builder_node_view(array &$build, EntityInterface $entity,
         'form_footer' => [
           '#markup' =>  new FormattableMarkup('</form>', []),
         ],
-      ],
+      ]
     );
   }
 }

@@ -22,8 +22,8 @@ class IndiciaRestClient {
     }
     $privateKey = file_get_contents($keyFile);
     $payload = [
-      'iss' => \Drupal::urlGenerator()->generateFromRoute('<front>', [], ['absolute' => TRUE]),
-      'http://indicia.org.uk/user:id' => \Drupal::currentUser()->id(),
+      'iss' => hostsite_get_url('<front>', FALSE, FALSE, TRUE),
+      'http://indicia.org.uk/user:id' => hostsite_get_user_field('indicia_user_id'),
       'exp' => time() + 300,
     ];
     $modulePath = \Drupal::service('module_handler')->getModule('iform')->getPath();
@@ -48,7 +48,6 @@ class IndiciaRestClient {
   protected function getRestResponse($endpoint, $method, $payload = NULL, $params = []) {
     $config = \Drupal::config('iform.settings');
     $url = $config->get('base_url') . "/index.php/services/rest/$endpoint";
-    \Drupal::logger('iform_layout_builder')->notice("Calling $url");
     if (!empty($params)) {
       $url .= '?' . http_build_query($params);
     }
