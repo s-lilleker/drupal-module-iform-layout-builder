@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - field.field.node.iform_layout_builder_form.body
+    - field.field.node.iform_layout_builder_form.field_available_for_groups
     - field.field.node.iform_layout_builder_form.field_form_type
     - field.field.node.iform_layout_builder_form.field_survey_id
     - field.field.node.iform_layout_builder_form.field_template
@@ -32,6 +33,13 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_available_for_groups:
+    weight: 26
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
   field_form_type:
     weight: 9
     settings: {  }
