@@ -237,9 +237,12 @@ function iform_layout_builder_node_view(array &$build, EntityInterface $entity,
         }
       }
     }
+    $class = $entity->field_template->value === '1' ? ' class="form-template alert alert-warning"' : '';
+    $msg = $entity->field_template->value === '1' ? '<div class="alert alert-danger">' .
+      t('This is a form template and should not be used to submit records') . '</div>' : '';
     $build = array_merge([
         'form_header' => [
-          '#markup' => new FormattableMarkup('<form autocomplete="off" method="POST" id="indicia-entry-form">', []),
+          '#markup' => new FormattableMarkup("<form autocomplete=\"off\" method=\"POST\" id=\"indicia-entry-form\"$class>$msg", []),
         ],
       ],
       $build,
@@ -249,5 +252,10 @@ function iform_layout_builder_node_view(array &$build, EntityInterface $entity,
         ],
       ]
     );
+    $build['#attached'] = [
+      'library' => [
+        'iform_layout_builder/block.base',
+      ],
+    ];
   }
 }

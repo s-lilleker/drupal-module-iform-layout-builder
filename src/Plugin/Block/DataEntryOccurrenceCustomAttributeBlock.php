@@ -58,11 +58,6 @@ TXT;
       $msgBox = str_replace('{message}', $msg, $indicia_templates['messageBox']);
       return [
         '#markup' => "<div class=\"iform-layout-builder-block-info\">$msgBox</div>",
-        '#attached' => [
-          'library' => [
-            'iform_layout_builder/block.base',
-          ],
-        ],
       ];
     }
     return [

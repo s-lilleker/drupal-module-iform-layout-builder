@@ -50,11 +50,6 @@ class DataEntryOccurrenceCommentBlock extends IndiciaControlBlockBase {
     $ctrl = \data_entry_helper::textarea($ctrlOptions);;
     return [
       '#markup' => new FormattableMarkup($ctrl, []),
-      '#attached' => [
-        'library' => [
-          'iform_layout_builder/block.base',
-        ],
-      ],
       '#cache' => [
         // No cache please.
         'max-age' => 0,
