@@ -9,7 +9,7 @@ field_name: field_available_for_groups
 entity_type: node
 bundle: iform_layout_builder_form
 label: 'Available for groups'
-description: 'If ticked then this form will be made available as an option when setting up the forms for an activity.'
+description: 'If ticked then this form will be made available as an option when setting up the forms for a recording group.'
 required: false
 translatable: true
 default_value:
