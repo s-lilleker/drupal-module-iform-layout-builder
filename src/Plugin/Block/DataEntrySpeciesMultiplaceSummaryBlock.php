@@ -37,11 +37,6 @@ class DataEntrySpeciesMultiplaceSummaryBlock extends IndiciaControlBlockBase {
     $ctrl = \data_entry_helper::multiple_places_species_checklist_summary();
     return [
       '#markup' => new FormattableMarkup($ctrl, []),
-      '#attached' => [
-        'library' => [
-          'iform_layout_builder/block.base',
-        ],
-      ],
       '#cache' => [
         // No cache please.
         'max-age' => 0,
