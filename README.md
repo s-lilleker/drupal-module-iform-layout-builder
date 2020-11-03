@@ -26,10 +26,19 @@ Create an RSA private/public key pair:
 $ openssl genrsa -des3 -out rsa_private.pem 2048
 $ openssl rsa -in rsa_private.pem -pubout > rsa_public.pub
 ```
+Or on Windows:
+```bash
+winpty openssl genpkey -algorithm RSA -out rsa_private.pem -pkeyopt rsa_keygen_bits:2048
+winpty openssl rsa -pubout -in rsa_private.pem -out rsa_public.pem
+```
+
 
 Save rsa_private.pem in the private file system folder.
 
 The contents of rsa_public.key needs to be saved into the website registration on the warehouse.
+
+Also on the website registration on the warehouse, ensure that the website URL is set correctly,
+e.g. https://www.example.com/
 
 ## Getting Started
 
