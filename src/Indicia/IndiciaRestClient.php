@@ -74,6 +74,11 @@ class IndiciaRestClient {
     $headerSize = curl_getinfo($session, CURLINFO_HEADER_SIZE);
     $header = substr($response, 0, $headerSize);
     $body = substr($response, $headerSize);
+    if (substr($body, 0, 42) === '<head><title>Document Moved</title></head>') {
+      // Strip Document Moved headers from IIS responses containing hrefs.
+      $parts = explode('</body>', $body, 2);
+      $body = $parts[1];
+    }
     // Auto decode the JSON.
     if (!empty($body)) {
       $decoded = json_decode($body, TRUE);
