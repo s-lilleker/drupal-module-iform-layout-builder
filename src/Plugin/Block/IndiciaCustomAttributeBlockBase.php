@@ -27,13 +27,31 @@ abstract class IndiciaCustomAttributeBlockBase extends IndiciaControlBlockBase {
           'id' => 'option_create_or_existing',
         ],
       ],
+      'existing_attribute_id' => [
+        '#title' => 'Existing attribute',
+        '#description' => 'Select the pre-existing attribute.',
+        '#type' => 'select',
+        '#options' => $existingAttributes,
+        '#empty_option' => '-Choose an attribute-',
+        '#states' => [
+          // Show this control only if the option 'Use a pre-existing attribute' is selected above.
+          'visible' => [
+            ':input[id="option_create_or_existing"]' => ['value' => 'existing'],
+          ],
+        ],
+      ],
       'admin_name' => [
         '#description' => 'Name used to uniquely identify this control to other people building forms.',
-        '#required' => TRUE,
       ],
       'admin_description' => [
         '#type' => 'textarea',
         '#description' => 'Description saved for this control on the Indicia warehouse.',
+        // @todo Visible when attr admin for existing (but needs to load on existing attr select).
+        '#states' => [
+          'visible' => [
+            ':input[id="option_create_or_existing"]' => ['value' => 'new'],
+          ],
+        ]
       ],
       'label' => [
         '#title' => 'Form label',
@@ -47,6 +65,12 @@ abstract class IndiciaCustomAttributeBlockBase extends IndiciaControlBlockBase {
       'suffix' => [
         '#label' => 'Control suffix',
         '#description' => 'Suffix shown after control (e.g the unit).',
+        '#states' => [
+          // Enable this control only if the option 'Create a new attribute' is selected above.
+          'visible' => [
+            ':input[id="option_create_or_existing"]' => ['value' => 'new'],
+          ],
+        ],
       ],
       'required' => [
         '#description' => 'Tick this box to make inputting a value required.',
@@ -64,8 +88,8 @@ abstract class IndiciaCustomAttributeBlockBase extends IndiciaControlBlockBase {
         ],
         '#empty_value' => '',
         '#states' => [
-          // Enable this control only if the option 'Create a new attribute' is selected above.
-          'enabled' => [
+          // Show this control only if the option 'Create a new attribute' is selected above.
+          'visible' => [
             ':input[id="option_create_or_existing"]' => ['value' => 'new'],
           ],
           'required' => [
@@ -139,50 +163,27 @@ abstract class IndiciaCustomAttributeBlockBase extends IndiciaControlBlockBase {
           ],
         ],
       ],
-      'existing_attribute_id' => [
-        '#title' => 'Existing attribute',
-        '#description' => 'Select the pre-existing attribute.',
-        '#type' => 'select',
-        '#options' => $existingAttributes,
-        '#states' => [
-          // Show this control only if the option 'Use a pre-existing attribute' is selected above.
-          'visible' => [
-            ':input[id="option_create_or_existing"]' => ['value' => 'existing'],
-          ],
-        ],
-      ],
     ];
     if (!$attrAdmin) {
-      // Controls only visible if attribute administrator or creating new control.
-      $fieldList['admin_name']['states'] = [
-        'visible' => [
-          ':input[id="option_create_or_existing"]' => ['value' => 'new'],
-        ],
-      ];
-      $fieldList['admin_description']['states'] = [
-        'visible' => [
-          ':input[id="option_create_or_existing"]' => ['value' => 'new'],
-        ],
-      ];
       // Controls only enabled if attribute administrator or creating new control.
-      $fieldList['lookup_options_terms']['states'] = [
-        // Enable this control only if the option 'Create a new attribute' is selected.
-        'enabled' => [
+      $fieldList['admin_name']['#states'] = [
+        'visible' => [
           ':input[id="option_create_or_existing"]' => ['value' => 'new'],
         ],
       ];
-      $fieldList['number_options_min']['states'] = [
-        // Enable this control only if the option 'Create a new attribute' is selected.
-        'enabled' => [
-          ':input[id="option_create_or_existing"]' => ['value' => 'new'],
-        ],
+      $fieldList['lookup_options_terms']['#states']['enabled'] = [
+        ':input[id="option_create_or_existing"]' => ['value' => 'new'],
       ];
-      $fieldList['number_options_max']['states'] = [
-        // Enable this control only if the option 'Create a new attribute' is selected.
-        'enabled' => [
-          ':input[id="option_create_or_existing"]' => ['value' => 'new'],
-        ],
+      $fieldList['number_options_min']['#states']['enabled'] = [
+        ':input[id="option_create_or_existing"]' => ['value' => 'new'],
       ];
+      $fieldList['number_options_max']['#states']['enabled'] = [
+        ':input[id="option_create_or_existing"]' => ['value' => 'new'],
+      ];
+    }
+    else {
+      // Admin name always required if attribute administrator.
+      $fieldList['admin_name']['#required'] = TRUE;
     }
     return $fieldList;
   }
@@ -211,6 +212,9 @@ abstract class IndiciaCustomAttributeBlockBase extends IndiciaControlBlockBase {
    * then update the local copy.
    */
   private function updateFromWarehouseAttribute($blockConfig) {
+    if (!isset($blockConfig['option_create_or_existing'])) {
+      \Drupal::logger('iform_layout_builder')->notice('Block 236: ' . json_encode($blockConfig));
+    }
     if ($blockConfig['option_create_or_existing'] === 'existing') {
       $surveyStructure = new SurveyStructure();
       $existing = $surveyStructure->getAttribute($this->getAttrEntityName(), $blockConfig['option_existing_attribute_id']);
@@ -251,6 +255,10 @@ abstract class IndiciaCustomAttributeBlockBase extends IndiciaControlBlockBase {
     switch ($blockConfig['option_data_type']) {
       case 'T':
         $ctrlName = empty($blockConfig['option_text_options_control']) ? 'text_input' : $blockConfig['option_text_options_control'];
+        break;
+
+      case 'B':
+        $ctrlName = 'checkbox';
         break;
 
       case 'L':

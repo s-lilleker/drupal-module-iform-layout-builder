@@ -36,7 +36,6 @@ abstract class IndiciaSpeciesListBlockBase extends IndiciaControlBlockBase {
         'all' => 'Any species from the master checklist',
         'scratchpadList' => 'A custom list of species',
       ],
-      '#required' => TRUE,
       '#empty_option' => '-Please select-',
       '#attributes' => [
         'id' => 'option_speciesToAddListType',
@@ -44,6 +43,9 @@ abstract class IndiciaSpeciesListBlockBase extends IndiciaControlBlockBase {
       '#states' => [
         // Show this control only if the option 'Start with an empty list to add species to' is checked above.
         'visible' => [
+          ':input[id="option_speciesListMode"]' => ['value' => 'empty'],
+        ],
+        'required' => [
           ':input[id="option_speciesListMode"]' => ['value' => 'empty'],
         ],
       ],
