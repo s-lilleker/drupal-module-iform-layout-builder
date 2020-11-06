@@ -267,7 +267,24 @@ abstract class IndiciaCustomAttributeBlockBase extends IndiciaControlBlockBase {
     $ctrlOptions = [
       'fieldname' => $fieldname,
       'label' => "$blockConfig[option_label]",
+      'validation' => [],
     ];
+    // HTML5 number type for numerics.
+    if ($blockConfig['option_data_type'] === 'I' || $blockConfig['option_data_type'] === 'F') {
+      $ctrlOptions['attributes'] = ['type' => 'number'];
+      if (strlen($blockConfig['option_number_options_min']) > 0) {
+        $ctrlOptions['attributes']['min'] = $blockConfig['option_number_options_min'];
+      }
+      if (strlen($blockConfig['option_number_options_max']) > 0) {
+        $ctrlOptions['attributes']['max'] = $blockConfig['option_number_options_max'];
+      }
+      if ($blockConfig['option_data_type'] === 'I') {
+        $ctrlOptions['validation'][] = 'integer';
+      }
+      elseif ($blockConfig['option_data_type'] === 'F') {
+        $ctrlOptions['attributes']['step'] = 'any';
+      }
+    }
     $helpTexts = [];
     if (!empty($blockConfig['option_helpText'])) {
       $helpTexts[] = $blockConfig['option_helpText'];
@@ -279,7 +296,7 @@ abstract class IndiciaCustomAttributeBlockBase extends IndiciaControlBlockBase {
       $ctrlOptions['helpText'] = implode('<br/>', $helpTexts);
     }
     if ($blockConfig['option_required'] === 1) {
-      $ctrlOptions['validation'] = ['required'];
+      $ctrlOptions['validation'][] = 'required';
     }
     if ($blockConfig['option_data_type'] === 'L') {
       if (!empty($blockConfig['option_existing_termlist_id'])) {

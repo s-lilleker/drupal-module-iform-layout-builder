@@ -4,6 +4,10 @@
 .layout-builder-block .iform-layout-builder-block-info {
   display: block;
 }
-.species-grid {
+/* Controls which are not standard form inputs still need margins */
+.species-grid, #map-container, #map-footer {
   margin-bottom: 15px;
+}
+#map-footer {
+  margin-top: -15px;
 }

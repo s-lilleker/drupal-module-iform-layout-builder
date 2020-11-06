@@ -92,8 +92,9 @@ class SurveyStructure extends IndiciaRestClient {
     $response = $this->getRestResponse("{$attrEntityName}_attributes", 'POST', $submission);
     if ($response['httpCode'] !== 201) {
       \Drupal::logger('iform_layout_builder')->error('Failed to create an attribute.');
-      \Drupal::logger('iform_layout_builder')->error(var_export($submission, TRUE));
-      \Drupal::logger('iform_layout_builder')->error(var_export($response, TRUE));
+      \Drupal::logger('iform_layout_builder')->error('Submission: ' . var_export($submission, TRUE));
+      \Drupal::logger('iform_layout_builder')->error('Response: ' . var_export($response, TRUE));
+      \Drupal::logger('iform_layout_builder')->error('BlockConfig: ' . var_export($blockConfig, TRUE));
       \Drupal::messenger()->addMessage(t(
         'Attribute creation failed: @status: @msg.',
         ['@status' => $response['response']['status'], '@msg' => $response['response']['message']]
@@ -110,8 +111,9 @@ class SurveyStructure extends IndiciaRestClient {
     $response = $this->getRestResponse("{$attrEntityName}_attributes/$id", 'PUT', $submission);
     if ($response['httpCode'] !== 200) {
       \Drupal::logger('iform_layout_builder')->error('Failed to update an attribute.');
-      \Drupal::logger('iform_layout_builder')->error(var_export($submission, TRUE));
-      \Drupal::logger('iform_layout_builder')->error(var_export($response, TRUE));
+      \Drupal::logger('iform_layout_builder')->error('Submission: ' . var_export($submission, TRUE));
+      \Drupal::logger('iform_layout_builder')->error('Response: ' . var_export($response, TRUE));
+      \Drupal::logger('iform_layout_builder')->error('BlockConfig: ' . var_export($blockConfig, TRUE));
       \Drupal::messenger()->addMessage(t(
         'Attribute update failed: @status: @msg.',
         ['@status' => $response['response']['status'], '@msg' => $response['response']['message']]
