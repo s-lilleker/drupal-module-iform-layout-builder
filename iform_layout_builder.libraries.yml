@@ -3,6 +3,8 @@ block.base:
   css:
     component:
       css/blocks.css: {}
+  js:
+    js/blocks.js: {}
 block.attrblockform:
   version: VERSION
   js:

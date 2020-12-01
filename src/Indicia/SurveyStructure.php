@@ -36,7 +36,8 @@ class SurveyStructure extends IndiciaRestClient {
       ));
     }
     else {
-      \Drupal::messenger()->addError(t('Attempt to save a survey failed: @error', ['@error' => $response['errorMessage']]));
+      $message = empty($response['response']['message']) ? $response['errorMessage'] : $response['response']['message'];
+      \Drupal::messenger()->addError(t('Attempt to save a survey failed: @error', ['@error' => $message]));
       \Drupal::logger('iform_layout_builder')->error('Attempt to save a survey failed: ' . var_export($response, TRUE));
     }
     return $entity->field_survey_id->value;
