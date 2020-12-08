@@ -52,6 +52,7 @@ settings.
 TXT;
       $msg = $this->t($txt, ['@label' => $blockConfig['option_label']]);
       // Pass attribute captions to the species checklist control.
+      iform_load_helpers(['helper_base']);
       if (!isset(\helper_base::$indiciaData['occurrenceAttributeCaptions'])) {
         \helper_base::$indiciaData['occurrenceAttributeCaptions'] = [];
       }
