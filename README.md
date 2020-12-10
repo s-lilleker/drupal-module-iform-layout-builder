@@ -14,10 +14,19 @@ when creating forms.
 
 ## Installation
 
+Before proceeding with the installation of the Drupal module, ensure:
+* the `rest_api` module is installed and configured with at least the `jwtUser` authentication 
+  method available.
+* the `scratchpad` module is installed as this is used to configure custom species checklists for
+  recording against.
+
 Install the IForm module in Drupal as usual then configure it to connect to your website
 registration on the warehouse. Ensure that you've selected a master checklist on the configuration
 pointing to a warehouse species list containing all available taxa. Then install the
 iform_layout_builder module.
+
+Ensure that your user profile has the **First name** and **Last name** fields filled in so your 
+account is linked to the warehouse correctly. You will need site editor rights on the warehouse.
 
 Set up the Drupal private file system (file_private_path in settings.php).
 
@@ -26,7 +35,7 @@ Create an RSA private/public key pair:
 $ openssl genrsa -des3 -out rsa_private.pem 2048
 $ openssl rsa -in rsa_private.pem -pubout > rsa_public.pub
 ```
-Or on Windows:
+Or on Windows from Git bash:
 ```bash
 winpty openssl genpkey -algorithm RSA -out rsa_private.pem -pkeyopt rsa_keygen_bits:2048
 winpty openssl rsa -pubout -in rsa_private.pem -out rsa_public.pem
