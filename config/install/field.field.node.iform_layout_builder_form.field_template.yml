@@ -4,6 +4,11 @@ dependencies:
   config:
     - field.storage.node.field_template
     - node.type.iform_layout_builder_form
+  module:
+    - iform_layout_builder
+  enforced:
+    module:
+      - iform_layout_builder
 id: node.iform_layout_builder_form.field_template
 field_name: field_template
 entity_type: node

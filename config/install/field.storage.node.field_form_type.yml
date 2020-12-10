@@ -4,6 +4,10 @@ dependencies:
   module:
     - node
     - options
+    - iform_layout_builder
+  enforced:
+    module:
+      - iform_layout_builder
 id: node.field_form_type
 field_name: field_form_type
 entity_type: node

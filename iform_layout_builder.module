@@ -5,6 +5,41 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\iform_layout_builder\Indicia\SurveyStructure;
 use Drupal\iform_layout_builder\Indicia\OccurrenceHandler;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplay;
+use Drupal\Component\Serialization\Yaml;
+
+/**
+ * Implements hook_modules_installed().
+ *
+ * Field required for overrideable layouts cannot be applied using 
+ * config/install folder because it would depend on the layout builder's entity
+ * field storage existing, which will only be the case if another entity has
+ * overrideable layouts enabled. If we include in the config and it does exist
+ * then you get a conflict. So, the entity view config is applied without 
+ * layout builder, then we manually enable overrideable layouts, and reapply
+ * the correct layout via config.
+ */
+function iform_layout_builder_modules_installed($modules) {
+  if (in_array('iform_layout_builder', $modules)) {
+    LayoutBuilderEntityViewDisplay::load('node.iform_layout_builder_form.default')
+      ->enableLayoutBuilder()
+      ->setOverridable()
+      ->save();
+
+    // Replace these configs.  We're using code to do this, as they are already
+    // installed.
+    $config_files = [
+      'core.entity_view_display.node.iform_layout_builder_form.default',
+    ];
+
+    foreach ($config_files as $config_id) {
+      $raw_data = file_get_contents(drupal_get_path('module', 'iform_layout_builder') . '/config/after_install/' . $config_id . '.yml');
+      \Drupal::configFactory()->getEditable($config_id)
+        ->setData(Yaml::decode($raw_data))
+        ->save();
+    }
+  }
+}
 
 /**
  * Implements hook_plugin_filter_TYPE__CONSUMER_alter().

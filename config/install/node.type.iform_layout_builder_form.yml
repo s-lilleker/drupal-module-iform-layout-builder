@@ -1,5 +1,12 @@
 langcode: en
 status: true
+dependencies:
+  module:
+    - node
+    - iform_layout_builder
+  enforced:
+    module:
+      - iform_layout_builder
 name: 'Indicia layout builder form'
 type: iform_layout_builder_form
 description: 'Data entry form which can be build using Layout Builder.'

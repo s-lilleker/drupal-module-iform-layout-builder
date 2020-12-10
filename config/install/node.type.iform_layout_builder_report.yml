@@ -1,5 +1,12 @@
 langcode: en
 status: true
+dependencies:
+  module:
+    - node
+    - iform_layout_builder
+  enforced:
+    module:
+      - iform_layout_builder
 name: 'Indicia layout builder report'
 type: iform_layout_builder_report
 description: 'Report page which can be build using Layout Builder.'

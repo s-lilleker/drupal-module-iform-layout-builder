@@ -232,7 +232,18 @@ class SurveyStructure extends IndiciaRestClient {
    *   Associative array of surveys.
    */
   public function getSurveyList() {
-    $response = $this->getRestResponse('surveys', 'GET');
+    try {
+      $response = $this->getRestResponse('surveys', 'GET');
+    }
+    catch (\Exception $e) {
+      if (substr($e->getMessage(), 0, 40) === 'JSON response could not be decoded: 404 ') {
+        \Drupal::messenger()->addError(t('The warehouse needs the REST API module installed.'));
+        return [];
+      }
+      else {
+        throw $e;
+      }
+    }
     $r = [];
     foreach ($response['response'] as $survey) {
       $r[$survey['values']['id']] = $survey['values']['title'];

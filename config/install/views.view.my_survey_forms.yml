@@ -9,6 +9,10 @@ dependencies:
     - node
     - text
     - user
+    - iform_layout_builder
+  enforced:
+    module:
+      - iform_layout_builder
 id: my_survey_forms
 label: 'My survey forms'
 module: views

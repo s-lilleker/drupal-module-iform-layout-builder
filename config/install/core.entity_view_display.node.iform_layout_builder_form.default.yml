@@ -7,7 +7,6 @@ dependencies:
     - field.field.node.iform_layout_builder_form.field_form_type
     - field.field.node.iform_layout_builder_form.field_survey_id
     - field.field.node.iform_layout_builder_form.field_template
-    - field.field.node.iform_layout_builder_form.layout_builder__layout
     - node.type.iform_layout_builder_form
   module:
     - iform_layout_builder
@@ -16,70 +15,9 @@ dependencies:
     - options
     - text
     - user
-third_party_settings:
-  layout_builder:
-    allow_custom: true
-    enabled: true
-    sections:
-      -
-        layout_id: layout_onecol
-        layout_settings:
-          label: 'Form area'
-        components:
-          9bc2742e-04aa-4c0b-b6eb-3e4df41e4428:
-            uuid: 9bc2742e-04aa-4c0b-b6eb-3e4df41e4428
-            region: content
-            configuration:
-              id: data_entry_spatial_ref_block
-              label: 'Indicia map spatial ref input block'
-              provider: iform_layout_builder
-              label_display: '0'
-              option_label: 'Map reference'
-              context_mapping: {  }
-            additional: {  }
-            weight: 3
-          fe467564-6281-4bc4-999c-572ad1146d0f:
-            uuid: fe467564-6281-4bc4-999c-572ad1146d0f
-            region: content
-            configuration:
-              id: data_entry_map_block
-              label: 'Indicia map species input block'
-              provider: iform_layout_builder
-              label_display: '0'
-              context_mapping: {  }
-            additional: {  }
-            weight: 4
-          63139e8a-6620-4c70-aabf-c199526d5d61:
-            uuid: 63139e8a-6620-4c70-aabf-c199526d5d61
-            region: content
-            configuration:
-              id: data_entry_date_picker_block
-              label: 'Indicia data entry date picker block'
-              provider: iform_layout_builder
-              label_display: ''
-              option_label: 'Enter a date'
-              option_allowVagueDates: 0
-              context_mapping: {  }
-            additional: {  }
-            weight: 2
-        third_party_settings: {  }
-      -
-        layout_id: layout_onecol
-        layout_settings:
-          label: Footer
-        components:
-          068fb760-803d-423f-af2c-8823fd0c7db4:
-            uuid: 068fb760-803d-423f-af2c-8823fd0c7db4
-            region: content
-            configuration:
-              id: data_entry_submit_buttons_block
-              label: 'Indicia data entry submit buttons block'
-              provider: iform_layout_builder
-              label_display: '0'
-              context_mapping: {  }
-            additional: {  }
-            weight: 0
-        third_party_settings: {  }
+  enforced:
+    module:
+      - iform_layout_builder
 id: node.iform_layout_builder_form.default
 targetEntityType: node
 bundle: iform_layout_builder_form
@@ -133,5 +71,3 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
-hidden:
-  layout_builder__layout: true

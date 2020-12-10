@@ -1,9 +1,10 @@
-name: 'Indicia layout builder blocks'
-description: 'Blocks for integrating Indicia with Layout Builder.'
+name: 'Indicia layout builder'
+description: 'Allows Indicia recording forms to be built visually with Layout Builder.'
 core: 8.x
 version: "8.x-1.0"
 package: "Indicia"
 type: module
 dependencies:
   - iform
+  - easy_login
   - layout_builder

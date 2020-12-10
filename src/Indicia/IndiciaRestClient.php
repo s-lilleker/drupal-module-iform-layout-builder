@@ -20,10 +20,16 @@ class IndiciaRestClient {
       \Drupal::messenger()->addError(t('Incorrect configuration - Iform layout builder needs a private key file in the Drupal private file system.'));
       return FALSE;
     }
+    $userId = hostsite_get_user_field('indicia_user_id');
+    if (!$userId) {
+      \Drupal::logger('iform_layout_builder')->error('User not linked to warehouse so REST API cannot be used by iform_layout_builder.');
+      \Drupal::messenger()->addError(t('Before continuing, please ensure your first name and surname are complete on your user profile.'));
+      return FALSE;      
+    }
     $privateKey = file_get_contents($keyFile);
     $payload = [
       'iss' => hostsite_get_url('<front>', FALSE, FALSE, TRUE),
-      'http://indicia.org.uk/user:id' => hostsite_get_user_field('indicia_user_id'),
+      'http://indicia.org.uk/user:id' => $userId,
       'exp' => time() + 300,
     ];
     $modulePath = \Drupal::service('module_handler')->getModule('iform')->getPath();
@@ -83,7 +89,8 @@ class IndiciaRestClient {
     if (!empty($body)) {
       $decoded = json_decode($body, TRUE);
       if ($decoded === NULL) {
-        throw new \Exception('JSON response could not be decoded: ' . $response);
+        \Drupal::logger('iform_layout_builder')->error("Request: $url");
+        throw new \Exception('JSON response could not be decoded: ' . curl_getinfo($session, CURLINFO_HTTP_CODE) . ' ' . $response);
       }
       $body = $decoded;
     }

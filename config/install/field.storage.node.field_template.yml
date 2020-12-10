@@ -3,6 +3,10 @@ status: true
 dependencies:
   module:
     - node
+    - iform_layout_builder
+  enforced:
+    module:
+      - iform_layout_builder
 id: node.field_template
 field_name: field_template
 entity_type: node
