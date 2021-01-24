@@ -24,7 +24,7 @@ class IndiciaRestClient {
     if (!$userId) {
       \Drupal::logger('iform_layout_builder')->error('User not linked to warehouse so REST API cannot be used by iform_layout_builder.');
       \Drupal::messenger()->addError(t('Before continuing, please ensure your first name and surname are complete on your user profile.'));
-      return FALSE;      
+      return FALSE;
     }
     $privateKey = file_get_contents($keyFile);
     $payload = [
