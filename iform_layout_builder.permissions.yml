@@ -1,3 +1,6 @@
+admininster iform layout builder:
+  title: 'Administer Indicia Layout Builder'
+  description: 'Allows the user to access the Indicia Layout Builder config form.'
 administer indicia attributes:
   title: 'Administer Indicia custom attributes'
   description: 'Allows the user to update any existing custom attribute, not just their own.'

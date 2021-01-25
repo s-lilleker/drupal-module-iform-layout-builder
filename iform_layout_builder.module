@@ -11,11 +11,11 @@ use Drupal\Component\Serialization\Yaml;
 /**
  * Implements hook_modules_installed().
  *
- * Field required for overrideable layouts cannot be applied using 
+ * Field required for overrideable layouts cannot be applied using
  * config/install folder because it would depend on the layout builder's entity
  * field storage existing, which will only be the case if another entity has
  * overrideable layouts enabled. If we include in the config and it does exist
- * then you get a conflict. So, the entity view config is applied without 
+ * then you get a conflict. So, the entity view config is applied without
  * layout builder, then we manually enable overrideable layouts, and reapply
  * the correct layout via config.
  */
@@ -75,9 +75,6 @@ function iform_layout_builder_plugin_filter_block__layout_builder_alter(array &$
       $formType = $node->field_form_type->value;
     }
   }
-  /*$settings['locale_custom_strings_en'][''] = [
-    'Add section'      => 'board',
-  ]*/
   foreach ($definitions as $id => &$definition) {
     if ($isIformLayoutBuilderForm) {
       $blockNameParts = explode('_', $id);
@@ -219,8 +216,10 @@ function iform_layout_builder_data_entry_form_submit($form, FormStateInterface $
 /**
  * Implements hook_entity_prepare_view().
  *
- * Detects loading a layout builder form after form layout save and clears the
- * Indicia cache for the page.
+ * * Detects loading a layout builder form after form layout save and clears
+ *   the Indicia cache for the page.
+ * * Detects save of a recording form and posts the records to the warehouse.
+ * * Detects the load of an existing record and fetches the data to edit.
  */
 function iform_layout_builder_entity_prepare_view($entity_type_id, array $entities, array $displays, $view_mode) {
   if ($entity_type_id === 'node' && $view_mode !== 'search_index') {
@@ -255,6 +254,7 @@ function iform_layout_builder_entity_prepare_view($entity_type_id, array $entiti
  * * Checks if posting record data and submits to the warehouse.
  * * Checks if saving a changed layout and refreshes the survey warehouse
  *   configuration.
+ * * Attaches a scratchpad based sensitive species control if configured.
  */
 function iform_layout_builder_node_view(array &$build, EntityInterface $entity,
     \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
@@ -270,6 +270,11 @@ function iform_layout_builder_node_view(array &$build, EntityInterface $entity,
         '#name' => 'occurrence:id',
         '#value' => \data_entry_helper::$entity_to_load['occurrence:id'],
       ];
+    }
+    $config = \Drupal::config('iform_layout_builder.settings');
+    $sensitiveSpeciesListId = $config->get('sensitivity_scratchpad_list_id');
+    if (!empty($sensitiveSpeciesListId)) {
+      iform_layout_builder_sensitivity_control($sensitiveSpeciesListId);
     }
     if (!empty(\data_entry_helper::$entity_to_load['sample:id'])) {
       $build['sample_id'] = [
@@ -293,7 +298,39 @@ function iform_layout_builder_node_view(array &$build, EntityInterface $entity,
     $build['#attached'] = [
       'library' => [
         'iform_layout_builder/block.base',
+        'iform/font_awesome',
       ],
     ];
   }
+}
+
+function iform_layout_builder_sensitivity_control($sensitiveSpeciesListId) {
+  iform_load_helpers(['report_helper']);
+  $iformConfig = \Drupal::config('iform.settings');
+  $conn = iform_get_connection_details();
+  $readAuth = \helper_base::get_read_auth($conn['website_id'], $conn['password']);
+  $data = report_helper::get_report_data([
+    'dataSource' => 'library/taxa/taxa_taxon_list_ids_for_scratchpad',
+    'readAuth' => $readAuth,
+    'extraParams' => [
+      'scratchpad_list_id' => $sensitiveSpeciesListId,
+      'taxon_list_ids' => $iformConfig->get('master_checklist_id'),
+    ],
+    'caching' => TRUE,
+    'cachePerUser' => FALSE,
+  ]);
+  $idArray = [];
+  foreach ($data as $row) {
+    $idArray[] = $row['taxa_taxon_list_id'];
+  }
+  \helper_base::addLanguageStringsToJs('sensitivityScratchpad', [
+    'sensitiveMessage' => 'This species is sensitive so has been blurred for you.',
+  ]);
+  $idJson = json_encode($idArray);
+  report_helper::$javascript .= <<<JS
+indiciaData.scratchpadBlursTo = 10000;
+indiciaData.scratchpadBlurList = $idJson;
+indiciaFns.enableScratchpadBlurList();
+
+JS;
 }
