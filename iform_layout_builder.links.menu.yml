@@ -1,0 +1,6 @@
+iform_layout_builder.settings:
+  title: 'Indicia Layout Builder settings'
+  description: 'Settings page for the Indicia Layout Builder module'
+  parent: iform.admin_config_iform
+  route_name: iform_layout_builder.settings
+  weight: 30

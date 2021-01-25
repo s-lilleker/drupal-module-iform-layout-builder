@@ -1,3 +1,10 @@
+iform_layout_builder.settings:
+  path: '/admin/config/iform/iform_layout_builder'
+  defaults:
+    _form: '\Drupal\iform_layout_builder\Form\SettingsForm'
+    _title: 'Indicia Layout Builder settings'
+  requirements:
+    _permission: 'administer iform layout builder'
 iform_layout_builder.copy_form_template:
   path: '/iform_layout_builder/template/copy'
   defaults:
