@@ -59,8 +59,10 @@ class OccurrenceHandler extends IndiciaRestClient {
         $fieldKey = $key;
         if ($value['multi_value'] === 'f') {
           $value = $value['raw_value'];
-        } else {
-          // Convert format to multi-value format recognised by data entry helper.
+        }
+        else {
+          // Convert format to multi-value format recognised by data entry
+          // helper.
           $multiVal = [];
           foreach ($value as $item) {
             $multiVal[] = [
@@ -73,6 +75,10 @@ class OccurrenceHandler extends IndiciaRestClient {
       }
       else {
         $fieldKey = "$entityName:$key";
+        // Taxon label for autocomplete needs a special field name.
+        if ($fieldKey === 'occurrence:taxon') {
+          $fieldKey = 'occurrence:taxa_taxon_list_id:taxon';
+        }
       }
       \data_entry_helper::$entity_to_load[$fieldKey] = $value;
     }
