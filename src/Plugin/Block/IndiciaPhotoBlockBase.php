@@ -11,14 +11,14 @@ abstract class IndiciaPhotoBlockBase extends IndiciaControlBlockBase {
     $connection = iform_get_connection_details();
     $readAuth = \data_entry_helper::get_read_auth($connection['website_id'], $connection['password']);
     $blockConfig = $this->getConfiguration();
-    $ctrlOptions = array(
+    $ctrlOptions = [
       'caption' => $blockConfig['option_label'],
       'table' => $table,
       'readAuth' => $readAuth,
       'resizeWidth' => 1600,
-      'resizeHeight' => 1600
-    );
-    $ctrl = \data_entry_helper::file_box($ctrlOptions);
+      'resizeHeight' => 1600,
+    ];
+    return \data_entry_helper::file_box($ctrlOptions);
   }
 
 }

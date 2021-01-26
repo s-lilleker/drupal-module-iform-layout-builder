@@ -15,7 +15,7 @@ use Drupal\Core\Form\FormStateInterface;
  *   category = @Translation("Indicia form control")
  * )
  */
-class DataEntryMultiplePlaceSpeciesListSummaryBlock extends IndiciaPhotoBlockBase {
+class DataEntryOccurrencePhotosBlock extends IndiciaPhotoBlockBase {
 
   protected function getControlConfigFields() {
     return [
