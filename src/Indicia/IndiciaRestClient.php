@@ -28,7 +28,7 @@ class IndiciaRestClient {
     }
     $privateKey = file_get_contents($keyFile);
     $payload = [
-      'iss' => hostsite_get_url('<front>', FALSE, FALSE, TRUE),
+      'iss' => hostsite_get_url('<front>', [], FALSE, TRUE),
       'http://indicia.org.uk/user:id' => $userId,
       'exp' => time() + 300,
     ];
