@@ -15,10 +15,17 @@ use Drupal\Core\Form\FormStateInterface;
  *   category = @Translation("Indicia form control")
  * )
  */
-class DataEntryMultiplePlaceSpeciesListSummaryBlock extends IndiciaControlBlockBase {
+class DataEntrySampleCommentBlock extends IndiciaControlBlockBase {
 
   protected function getControlConfigFields() {
     return [
+      'label' => [
+        '#description' => 'Label shown for the form control.',
+      ],
+      'helpText' => [
+        '#title' => 'Help text',
+        '#description' => 'Tip shown beneath the control.',
+      ],
     ];
   }
 
@@ -34,12 +41,13 @@ class DataEntryMultiplePlaceSpeciesListSummaryBlock extends IndiciaControlBlockB
    */
   public function build() {
     iform_load_helpers(['data_entry_helper']);
+    $blockConfig = $this->getConfiguration();
     $ctrlOptions = [
       'label' => $blockConfig["option_label"],
       'helpText' => $blockConfig["option_helpText"],
       'fieldname' => 'sample:comment',
     ];
-    $ctrl = \data_entry_helper::textarea($ctrlOptions);;
+    $ctrl = \data_entry_helper::textarea($ctrlOptions);
     return [
       '#markup' => new FormattableMarkup($ctrl, []),
       '#cache' => [

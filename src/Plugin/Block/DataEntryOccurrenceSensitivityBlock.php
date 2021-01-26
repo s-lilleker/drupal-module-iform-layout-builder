@@ -15,13 +15,14 @@ use Drupal\Core\Form\FormStateInterface;
  *   category = @Translation("Indicia form control")
  * )
  */
-class DataEntryOccurrenceSensitivtiyBlock extends IndiciaControlBlockBase {
+class DataEntryOccurrenceSensitivityBlock extends IndiciaControlBlockBase {
 
   protected function getControlConfigFields() {
     return [
       'defaultBlur' => [
         '#title' => 'Default blur',
         '#description' => 'If the form should blur records by default, then set the blur value here. The user can override it.',
+        '#type' => 'select',
         '#options' => [
           '100' => '100m',
           '1000' => '1km',
