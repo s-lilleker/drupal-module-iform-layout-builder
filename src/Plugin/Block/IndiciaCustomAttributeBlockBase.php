@@ -62,6 +62,11 @@ abstract class IndiciaCustomAttributeBlockBase extends IndiciaControlBlockBase {
         '#type' => 'textarea',
         '#description' => 'Tip shown beneath the control.',
       ],
+      'lockable' => [
+        '#title' => 'Lock icon',
+        '#title' => 'Enable the lock icon so the control value can be re-used on the next form submission.',
+        '#type' => 'checkbox',
+      ],
       'suffix' => [
         '#label' => 'Control suffix',
         '#description' => 'Suffix shown after control (e.g the unit).',
@@ -268,6 +273,7 @@ abstract class IndiciaCustomAttributeBlockBase extends IndiciaControlBlockBase {
       'fieldname' => $fieldname,
       'label' => "$blockConfig[option_label]",
       'validation' => [],
+      'lockable' => !empty($blockConfig["option_lockable"]) ? TRUE : FALSE,
     ];
     // HTML5 number type for numerics.
     if ($blockConfig['option_data_type'] === 'I' || $blockConfig['option_data_type'] === 'F') {

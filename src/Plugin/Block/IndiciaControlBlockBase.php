@@ -183,4 +183,29 @@ abstract class IndiciaControlBlockBase extends BlockBase implements ContainerFac
     return $mapSystems;
   }
 
+  /**
+   * Applies block config options to matching control parameters.
+   *
+   * @param array $blockConfig
+   *   Settings for this block.
+   * @param array $ctrlOptions
+   *   Settings for the control which will be updated by this method.
+   */
+  protected function applyBlockConfigToControl(array $blockConfig, array &$ctrlOptions) {
+    $configFieldList = $this->getControlConfigFields();
+    foreach ($configFieldList as $opt => $cfg) {
+      foreach ($configFieldList as $opt => $cfg) {
+        if (isset($blockConfig["option_$opt"])) {
+          if (isset($cfg['#type']) && $cfg['#type'] === 'checkbox') {
+            // Map checkbox 1:0 to TRUE:FALSE.
+            $ctrlOptions[$opt] = $blockConfig["option_$opt"] === 1 ? TRUE : FALSE;
+          }
+          else {
+            $ctrlOptions[$opt] = $blockConfig["option_$opt"];
+          }
+        }
+      }
+    }
+  }
+
 }

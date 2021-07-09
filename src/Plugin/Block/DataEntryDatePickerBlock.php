@@ -29,6 +29,11 @@ class DataEntryDatePickerBlock extends IndiciaControlBlockBase {
         '#title' => 'Enable entry of vague dates',
         '#type' => 'checkbox',
       ],
+      'lockable' => [
+        '#title' => 'Lock icon',
+        '#title' => 'Enable the lock icon so the control value can be re-used on the next form submission.',
+        '#type' => 'checkbox',
+      ],
     ];
   }
 
@@ -45,15 +50,10 @@ class DataEntryDatePickerBlock extends IndiciaControlBlockBase {
   public function build() {
     iform_load_helpers(['data_entry_helper']);
     $blockConfig = $this->getConfiguration();
-    $configFieldList = $this->getControlConfigFields();
     $ctrlOptions = [
       'fieldname' => 'sample:date',
     ];
-    foreach ($configFieldList as $opt => $cfg) {
-      if (isset($blockConfig["option_$opt"])) {
-        $ctrlOptions[$opt] = $blockConfig["option_$opt"];
-      }
-    }
+    $this->applyBlockConfigToControl($blockConfig, $ctrlOptions);
     try {
       $ctrl = \data_entry_helper::date_picker($ctrlOptions);
     }

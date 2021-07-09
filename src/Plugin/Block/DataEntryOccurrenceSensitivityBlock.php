@@ -30,7 +30,12 @@ class DataEntryOccurrenceSensitivityBlock extends IndiciaControlBlockBase {
           '10000' => '10km',
           '100000' => '100km',
         ]
-      ]
+      ],
+      'lockable' => [
+        '#title' => 'Lock icon',
+        '#title' => 'Enable the lock icon so the control value can be re-used on the next form submission.',
+        '#type' => 'checkbox',
+      ],
     ];
   }
 
@@ -47,7 +52,9 @@ class DataEntryOccurrenceSensitivityBlock extends IndiciaControlBlockBase {
   public function build() {
     iform_load_helpers(['data_entry_helper']);
     $blockConfig = $this->getConfiguration();
-    $ctrlOptions = [];
+    $ctrlOptions = [
+      'lockable' => !empty($blockConfig["option_lockable"]) ? TRUE : FALSE,
+    ];
     if (!empty($blockConfig['options_defaultBlur'])) {
       $ctrlOptions['defaultBlur'] = $blockConfig['options_defaultBlur'];
     }

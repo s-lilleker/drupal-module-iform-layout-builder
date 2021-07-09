@@ -26,6 +26,11 @@ class DataEntrySpeciesSingleBlock extends IndiciaControlBlockBase {
         '#title' => 'Help text',
         '#description' => 'Tip shown beneath the control.',
       ],
+      'lockable' => [
+        '#title' => 'Lock icon',
+        '#title' => 'Enable the lock icon so the control value can be re-used on the next form submission.',
+        '#type' => 'checkbox',
+      ],
       'scratchpadListId' => [
         '#title' => 'Limit species available to custom list',
         '#description' => 'List of species available for selection.',
@@ -68,11 +73,7 @@ class DataEntrySpeciesSingleBlock extends IndiciaControlBlockBase {
       $ctrlOptions['extraParams']['scratchpad_list_id'] = $blockConfig['option_scratchpadListId'];
     }
     unset($configFieldList['taxonListId']);
-    foreach ($configFieldList as $opt => $cfg) {
-      if (isset($blockConfig["option_$opt"])) {
-        $ctrlOptions[$opt] = $blockConfig["option_$opt"];
-      }
-    }
+    $this->applyBlockConfigToControl($blockConfig, $ctrlOptions);
     try {
       $ctrl = \data_entry_helper::autocomplete($ctrlOptions);
     }

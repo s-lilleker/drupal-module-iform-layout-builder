@@ -26,6 +26,11 @@ class DataEntryLocationBlock extends IndiciaControlBlockBase {
         '#title' => 'Help text',
         '#description' => 'Tip shown beneath the control.',
       ],
+      'lockable' => [
+        '#title' => 'Lock icon',
+        '#title' => 'Enable the lock icon so the control value can be re-used on the next form submission.',
+        '#type' => 'checkbox',
+      ],
       'mode' => [
         '#title' => 'Mode',
         '#type' => 'select',
@@ -157,6 +162,7 @@ class DataEntryLocationBlock extends IndiciaControlBlockBase {
       'label' => $blockConfig["option_label"],
       'helpText' => $blockConfig["option_helpText"],
       'fieldname' => 'sample:location_name',
+      'lockable' => !empty($blockConfig["option_lockable"]) ? TRUE : FALSE,
     ];
     return \data_entry_helper::text_input($ctrlOptions);
   }
@@ -171,6 +177,7 @@ class DataEntryLocationBlock extends IndiciaControlBlockBase {
       'report' => 'library/locations/my_sites_lookup_include_type',
       'extraParams' => $readAuth,
       'blankText' => $this->t('-Select site-'),
+      'lockable' => !empty($blockConfig["option_lockable"]) ? TRUE : FALSE,
     ];
     if (!empty($blockConfig['option_locationTypeId'])) {
       $ctrlOptions['extraParams']['location_type_id'] = $blockConfig['option_locationTypeId'];

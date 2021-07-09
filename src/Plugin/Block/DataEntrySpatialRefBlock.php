@@ -26,6 +26,11 @@ class DataEntrySpatialRefBlock extends IndiciaControlBlockBase {
         '#title' => 'Help text',
         '#description' => 'Tip shown beneath the control.',
       ],
+      'lockable' => [
+        '#title' => 'Lock icon',
+        '#title' => 'Enable the lock icon so the control value can be re-used on the next form submission.',
+        '#type' => 'checkbox',
+      ],
     ];
     if (count($mapSystems) > 1) {
       $fields['system'] = [
@@ -61,7 +66,6 @@ class DataEntrySpatialRefBlock extends IndiciaControlBlockBase {
   public function build() {
     iform_load_helpers(['data_entry_helper']);
     $blockConfig = $this->getConfiguration();
-    $configFieldList = $this->getControlConfigFields();
     $mapSystems = $this->getAvailableMapSystems();
     if (!empty($blockConfig['option_system']) && array_key_exists($blockConfig['option_system'], $mapSystems)) {
       // Replace array with single chosen value.
@@ -71,11 +75,7 @@ class DataEntrySpatialRefBlock extends IndiciaControlBlockBase {
       'label' => 'Map reference',
       'systems' => $mapSystems,
     );
-    foreach ($configFieldList as $opt => $cfg) {
-      if (isset($blockConfig["option_$opt"])) {
-        $ctrlOptions[$opt] = $blockConfig["option_$opt"];
-      }
-    }
+    $this->applyBlockConfigToControl($blockConfig, $ctrlOptions);
     try {
       $ctrl = \data_entry_helper::sref_and_system($ctrlOptions);
     }
