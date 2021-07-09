@@ -237,7 +237,7 @@ function iform_layout_builder_entity_prepare_view($entity_type_id, array $entiti
             $handler->postRecord($_POST, $entity);
           }
           // Fetch existing records before block build occurs.
-          if (!empty($_GET)) {
+          if (!empty($_GET['occurrence_id'])) {
             $handler = new OccurrenceHandler();
             $handler->getRecord($_GET['occurrence_id'], $entity);
           }
