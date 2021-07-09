@@ -183,7 +183,7 @@ class SurveyStructure extends IndiciaRestClient {
           $attrType = $matches[1];
           if ($blockConfig['option_create_or_existing'] === 'new' || $blockConfig['option_existing_attribute_id'] === NULL) {
             // Create a new attribute, which will also link to the survey.
-            $createResponse = $this->createAttribute($matches[1], $blockConfig, $entity->field_survey_id->value);
+            $createResponse = $this->createAttribute($attrType, $blockConfig, $entity->field_survey_id->value);
             $fetch = $this->getRestResponse($createResponse['href'], 'GET');
             $attr = $fetch['response'];
             $blockConfig['option_create_or_existing'] = 'existing';
@@ -195,7 +195,7 @@ class SurveyStructure extends IndiciaRestClient {
             \Drupal::messenger()->addMessage(t(
               'A new @type attribute has been created on the warehouse with ID @id for the @label control.',
               [
-                '@type' => $matches[1],
+                '@type' => $attrType,
                 '@id' => $attr['values']['id'],
                 '@label' =>  $blockConfig['option_label'],
               ]
@@ -205,7 +205,7 @@ class SurveyStructure extends IndiciaRestClient {
             // If user is has attribute admin rights then update the warehouse
             // attribute caption, description, validation rules etc.
             if ($attrAdmin) {
-              $this->updateAttribute($matches[1], $blockConfig, $entity->field_survey_id->value);
+              $this->updateAttribute($attrType, $blockConfig, $entity->field_survey_id->value);
             }
             else {
               // User not admin but can still update the link data between the
