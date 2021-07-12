@@ -15,4 +15,12 @@
   margin-top: -15px;
 }
 
+/* Buttons block */
+.block-data-entry-submit-buttons-block button {
+  margin-left: 15px;
+}
+.block-data-entry-submit-buttons-block button:first-child {
+  margin-left: 0;
+}
+
 /*# sourceMappingURL=blocks.css.map */

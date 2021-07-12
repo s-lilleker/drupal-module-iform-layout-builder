@@ -2,7 +2,6 @@
 
 namespace Drupal\iform_layout_builder\Plugin\Block;
 
-use Drupal\Core\Block\BlockBase;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -16,7 +15,7 @@ use Drupal\Core\Form\FormStateInterface;
  *   category = @Translation("Indicia form control")
  * )
  */
-class DataEntrySubmitButtonsBlock extends BlockBase {
+class DataEntrySubmitButtonsBlock extends IndiciaLayoutBuilderBlockBase {
 
   /**
    * {@inheritdoc}
@@ -29,9 +28,19 @@ class DataEntrySubmitButtonsBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function build() {
-    $ctrl = '<button type="submit" class="btn btn-primary">Save</button>';
+    iform_load_helpers(['data_entry_helper']);
+    $ctrls = '<button type="submit" class="btn btn-primary">Save</button>';
+    if (!empty(\data_entry_helper::$entity_to_load['sample:id'])) {
+      $node = $this->getCurrentNode();
+      if ($node->field_form_type->value !== 'single') {
+        $ctrls .= '<button type="submit" class="btn btn-danger" name="action" value="DELETE">Delete record</button>';
+      }
+      else {
+        $ctrls .= '<button type="submit" class="btn btn-danger" name="action" value="DELETE">Delete all records</button>';
+      }
+    }
     return [
-      '#markup' => new FormattableMarkup($ctrl, []),
+      '#markup' => new FormattableMarkup($ctrls, []),
     ];
   }
 

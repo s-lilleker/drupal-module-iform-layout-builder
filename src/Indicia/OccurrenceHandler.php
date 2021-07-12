@@ -17,12 +17,16 @@ class OccurrenceHandler extends IndiciaRestClient {
   public function postRecord($data, $entity) {
     $config = \Drupal::config('iform.settings');
     $auth = \data_entry_helper::get_read_write_auth($config->get('website_id'), $config->get('password'));
+    $isDeletion = !empty($_POST['action']) && $_POST['action'] === 'DELETE';
     $values = array_merge($data, [
       'website_id' => $config->get('website_id'),
       'survey_id' => $entity->field_survey_id->value,
       'sample:input_form' => trim(\Drupal::service('path.alias_manager')
         ->getAliasByPath('/node/' . $entity->id()), '/'),
     ]);
+    if ($isDeletion) {
+      $values['sample:deleted'] = 't';
+    }
     // Link to recording group/activity.
     if (!empty($_GET['group_id'])) {
       $values['sample:group_id'] = $_GET['group_id'];
@@ -36,7 +40,15 @@ class OccurrenceHandler extends IndiciaRestClient {
     }
     $response = \data_entry_helper::forward_post_to('save', $submission, $auth['write_tokens']);
     if (is_array($response) && array_key_exists('success', $response)) {
-      \Drupal::messenger()->addMessage("Thank you for the record");
+      if ($isDeletion && $entity->field_form_type->value === 'single') {
+        \Drupal::messenger()->addMessage("The record has been deleted.");
+      }
+      elseif ($isDeletion) {
+        \Drupal::messenger()->addMessage("The list of records has been deleted.");
+      }
+      else {
+        \Drupal::messenger()->addMessage("Thank you for the record.");
+      }
     }
     elseif (isset($response['errors'])) {
       foreach ($response['errors'] as $key => $msg) {

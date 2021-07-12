@@ -189,7 +189,7 @@ class SurveyStructure extends IndiciaRestClient {
             $blockConfig['option_create_or_existing'] = 'existing';
             $blockConfig['option_existing_attribute_id'] = $attr['values']['id'];
             $blockConfig['option_existing_termlist_id'] = $attr['values']['termlist_id'];
-            // Also store the attributes_website link ID, helpful when updating.
+            // Also store the attributes_website link ID, required when updating.
             $blockConfig['option_existing_attributes_website_id'] = $createResponse['sample_attributes_websites'][0]['values']['id'];
             $component->setConfiguration($blockConfig);
             \Drupal::messenger()->addMessage(t(

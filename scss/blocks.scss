@@ -11,3 +11,13 @@
 #map-footer {
   margin-top: -15px;
 }
+/* Buttons block */
+.block-data-entry-submit-buttons-block {
+  button {
+    margin-left: 15px;
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+}
