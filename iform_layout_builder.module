@@ -3,7 +3,7 @@
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\iform_layout_builder\Indicia\SurveyStructure;
-use Drupal\iform_layout_builder\Indicia\OccurrenceHandler;
+use Drupal\iform_layout_builder\Indicia\SampleOccurrenceHandler;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplay;
 use Drupal\Component\Serialization\Yaml;
@@ -233,13 +233,18 @@ function iform_layout_builder_entity_prepare_view($entity_type_id, array $entiti
         if (!empty($_POST) || !empty($_GET)) {
           iform_load_helpers(['data_entry_helper']);
           if (!empty($_POST)) {
-            $handler = new OccurrenceHandler();
+            $handler = new SampleOccurrenceHandler();
             $handler->postRecord($_POST, $entity);
           }
           // Fetch existing records before block build occurs.
-          if (!empty($_GET['occurrence_id'])) {
-            $handler = new OccurrenceHandler();
-            $handler->getRecord($_GET['occurrence_id'], $entity);
+          if (!empty($_GET['occurrence_id']) || !empty($_GET['sample_id'])) {
+            $handler = new SampleOccurrenceHandler();
+            if (!empty($_GET['occurrence_id'])) {
+              $handler->getExistingOccurrence($_GET['occurrence_id'], $entity);
+            }
+            elseif (!empty($_GET['sample_id'])) {
+              $handler->getExistingSample($_GET['sample_id'], $entity);
+            }
           }
         }
       }
