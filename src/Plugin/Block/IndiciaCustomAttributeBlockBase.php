@@ -194,16 +194,16 @@ abstract class IndiciaCustomAttributeBlockBase extends IndiciaControlBlockBase {
   }
 
   /**
-  * {@inheritdoc}
-  */
+   * {@inheritdoc}
+   */
   public function blockSubmit($form, FormStateInterface $form_state) {
     $this->setConfigurationValue('option_label', microtime(TRUE));
     parent::blockSubmit($form, $form_state);
   }
 
   /**
-  * {@inheritdoc}
-  */
+   * {@inheritdoc}
+   */
   public function blockForm($form, FormStateInterface $form_state) {
     $blockConfig = $this->getConfiguration();
     $this->updateFromWarehouseAttribute($blockConfig);
@@ -217,10 +217,7 @@ abstract class IndiciaCustomAttributeBlockBase extends IndiciaControlBlockBase {
    * then update the local copy.
    */
   private function updateFromWarehouseAttribute($blockConfig) {
-    if (!isset($blockConfig['option_create_or_existing'])) {
-      \Drupal::logger('iform_layout_builder')->notice('Block 236: ' . json_encode($blockConfig));
-    }
-    if ($blockConfig['option_create_or_existing'] === 'existing') {
+    if (isset($blockConfig['option_create_or_existing']) && $blockConfig['option_create_or_existing'] === 'existing') {
       $surveyStructure = new SurveyStructure();
       $existing = $surveyStructure->getAttribute($this->getAttrEntityName(), $blockConfig['option_existing_attribute_id']);
       if ($existing['httpCode'] === 404) {

@@ -108,7 +108,9 @@ class SurveyStructure extends IndiciaRestClient {
     $submission = $this->getAttributeSubmission($attrEntityName, $blockConfig, $surveyId);
     $id = $blockConfig['option_existing_attribute_id'];
     // Ensure existing attribute->website link used, not duplicated.
-    $submission["{$attrEntityName}_attributes_websites"][0]['values']['id'] = $blockConfig['option_existing_attributes_website_id'];
+    if (isset($blockConfig['option_existing_attributes_website_id'])) {
+      $submission["{$attrEntityName}_attributes_websites"][0]['values']['id'] = $blockConfig['option_existing_attributes_website_id'];
+    }
     $response = $this->getRestResponse("{$attrEntityName}_attributes/$id", 'PUT', $submission);
     if ($response['httpCode'] !== 200) {
       \Drupal::logger('iform_layout_builder')->error('Failed to update an attribute.');
@@ -189,7 +191,8 @@ class SurveyStructure extends IndiciaRestClient {
             $blockConfig['option_create_or_existing'] = 'existing';
             $blockConfig['option_existing_attribute_id'] = $attr['values']['id'];
             $blockConfig['option_existing_termlist_id'] = $attr['values']['termlist_id'];
-            // Also store the attributes_website link ID, required when updating.
+            // Also store the attributes_website link ID, required when
+            // updating.
             $blockConfig['option_existing_attributes_website_id'] = $createResponse['sample_attributes_websites'][0]['values']['id'];
             $component->setConfiguration($blockConfig);
             \Drupal::messenger()->addMessage(t(
@@ -197,20 +200,26 @@ class SurveyStructure extends IndiciaRestClient {
               [
                 '@type' => $attrType,
                 '@id' => $attr['values']['id'],
-                '@label' =>  $blockConfig['option_label'],
+                '@label' => $blockConfig['option_label'],
               ]
             ));
           }
           else {
-            // If user is has attribute admin rights then update the warehouse
-            // attribute caption, description, validation rules etc.
-            if ($attrAdmin) {
-              $this->updateAttribute($attrType, $blockConfig, $entity->field_survey_id->value);
-            }
-            else {
-              // User not admin but can still update the link data between the
-              // attribute and survey, e.g. the required validation rule in
-              // attributes_websites link.
+            if (empty($blockConfig['option_data_type'])) {
+              // Block is for a new link to an existing attribute, so just need
+              // to fill in missing block config from the attribute metadata on
+              // the warehouse.
+              $existing = $this->getAttribute($attrType, $blockConfig['option_existing_attribute_id']);
+              $blockConfig['option_admin_name'] = $existing['response']['values']['caption'];
+              $blockConfig['option_data_type'] = $existing['response']['values']['data_type'];
+              if ($blockConfig['option_data_type'] === 'L') {
+                $blockConfig['option_existing_termlist_id'] = $existing['response']['values']['termlist_id'];
+              }
+              $blockConfig['option_suffix'] = $existing['response']['values']['unit'];
+              if (isset($existing['response']['terms'])) {
+                $blockConfig['option_lookup_options_terms'] = implode("\n", $existing['response']['terms']);
+              }
+              $component->setConfiguration($blockConfig);
               $this->updateAttributeWebsiteLink(
                 $attrType,
                 $entity->field_survey_id->value,
@@ -218,6 +227,25 @@ class SurveyStructure extends IndiciaRestClient {
                 array_key_exists($blockConfig['option_existing_attribute_id'], $existingAttrs[$attrType])
                   ? $existingAttrs[$attrType][$blockConfig['option_existing_attribute_id']] : NULL
               );
+            }
+            else {
+              // If user is has attribute admin rights then update the warehouse
+              // attribute caption, description, validation rules etc.
+              if ($attrAdmin) {
+                $this->updateAttribute($attrType, $blockConfig, $entity->field_survey_id->value);
+              }
+              else {
+                // User not admin but can still update the link data between the
+                // attribute and survey, e.g. the required validation rule in
+                // attributes_websites link.
+                $this->updateAttributeWebsiteLink(
+                  $attrType,
+                  $entity->field_survey_id->value,
+                  $blockConfig,
+                  array_key_exists($blockConfig['option_existing_attribute_id'], $existingAttrs[$attrType])
+                    ? $existingAttrs[$attrType][$blockConfig['option_existing_attribute_id']] : NULL
+                );
+              }
             }
           }
         }

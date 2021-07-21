@@ -2,7 +2,13 @@
 
 namespace Drupal\iform_layout_builder\Indicia;
 
-class OccurrenceHandler extends IndiciaRestClient {
+use data_entry_helper;
+
+/**
+ * A class for handling RESTful interactions with samples and occurrences.
+ */
+class SampleOccurrenceHandler extends IndiciaRestClient {
+  use \Drupal\Core\StringTranslation\StringTranslationTrait;
 
   /**
    * Post a sample/occurrence submission.
@@ -51,10 +57,7 @@ class OccurrenceHandler extends IndiciaRestClient {
       }
     }
     elseif (isset($response['errors'])) {
-      foreach ($response['errors'] as $key => $msg) {
-        \Drupal::messenger()->addWarning(str_replace(':', ' ', $key) . ' - ' . $msg);
-        // @todo Display errors correctly alongside controls.
-      }
+      \data_entry_helper::dump_errors($response);
     }
   }
 
@@ -138,22 +141,79 @@ class OccurrenceHandler extends IndiciaRestClient {
   }
 
   /**
-   * Load a record ready to show on a form for editing.
+   * Loads sample or occurrence media from the REST API.
+   *
+   * Stores the media data in $entity_to_load so it's picked up by a form in
+   * edit mode.
+   *
+   * @param string $entityType
+   *   Base entity, i.e. sample or occurrence.
+   * @param array $entity
+   *   Array of entity data.
+   */
+  private function loadMedia($entityType, array $entity) {
+    $mediaEntity = "{$entityType}_medium";
+    $mediaEntityPlural = "{$entityType}_media";
+    $images = $this->getRestResponse($mediaEntityPlural, 'GET', NULL, ["{$entityType}_id" => $entity['id']]);
+    foreach ($images['response'] as $image) {
+      $imageId = $image['values']['id'];
+      \data_entry_helper::$entity_to_load["$mediaEntity:id:$imageId"] = $imageId;
+      \data_entry_helper::$entity_to_load["$mediaEntity:path:$imageId"] = $image['values']['path'];
+      \data_entry_helper::$entity_to_load["$mediaEntity:caption:$imageId"] = $image['values']['caption'];
+      \data_entry_helper::$entity_to_load["$mediaEntity:media_type:$imageId"] = $image['values']['media_type'];
+      \data_entry_helper::$entity_to_load["$mediaEntity:media_type_id:$imageId"] = $image['values']['media_type_id'];
+    }
+  }
+
+  /**
+   * Load an occurrence ready to show on a form for editing.
    *
    * @param int $id
    *   Occurrence ID.
-   * @param object $entity
+   * @param object $formEntity
    *   Drupal entity defining what type of form it is.
    */
-  public function getRecord($id, $entity) {
+  public function getExistingOccurrence($id, $formEntity) {
     $response = $this->getRestResponse("occurrences/$id", 'GET', NULL, ['verbose' => 1]);
     $occurrence = $response['response']['values'];
     $response = $this->getRestResponse("samples/$occurrence[sample_id]", 'GET', NULL, ['verbose' => 1]);
     $sample = $response['response']['values'];
     \data_entry_helper::$entity_to_load = [];
     $this->copyEntityValueToLoadData($sample, 'smp', 'sample');
-    if ($entity->field_form_type->value === 'single') {
+    $this->loadMedia('sample', $sample);
+    if ($formEntity->field_form_type->value === 'single') {
       $this->copyEntityValueToLoadData($occurrence, 'occ', 'occurrence');
+      $this->loadMedia('occurrence', $occurrence);
+    }
+  }
+
+  /**
+   * Load a sample ready to show on a form for editing.
+   *
+   * @param int $id
+   *   Sample ID.
+   * @param object $formEntity
+   *   Drupal entity defining what type of form it is.
+   */
+  public function getExistingSample($id, $formEntity) {
+    $response = $this->getRestResponse("samples/$id", 'GET', NULL, ['verbose' => 1]);
+    $sample = $response['response']['values'];
+    \data_entry_helper::$entity_to_load = [];
+    $this->copyEntityValueToLoadData($sample, 'smp', 'sample');
+    $this->loadMedia('sample', $sample);
+    if ($formEntity->field_form_type->value === 'single') {
+      $response = $this->getRestResponse("occurrences", 'GET', NULL, [
+        'verbose' => 1,
+        'sample_id' => $sample['id'],
+      ]);
+      if (count($response['response']) === 1) {
+        $occurrence = $response['response'][0]['values'];
+        $this->copyEntityValueToLoadData($occurrence, 'occ', 'occurrence');
+        $this->loadMedia('occurrence', $occurrence);
+      }
+      else {
+        \Drupal::messenger()->addWarning($this->t('Only samples containing a single occurrence can load on this form.'));
+      }
     }
   }
 }

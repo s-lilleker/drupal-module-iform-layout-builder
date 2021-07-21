@@ -41,7 +41,8 @@ abstract class IndiciaSpeciesListBlockBase extends IndiciaControlBlockBase {
         'id' => 'option_speciesToAddListType',
       ],
       '#states' => [
-        // Show this control only if the option 'Start with an empty list to add species to' is checked above.
+        // Show this control only if the option 'Start with an empty list to
+        // add species to' is checked above.
         'visible' => [
           ':input[id="option_speciesListMode"]' => ['value' => 'empty'],
         ],
@@ -97,7 +98,24 @@ abstract class IndiciaSpeciesListBlockBase extends IndiciaControlBlockBase {
       '#description' => 'Allow extra species to be added to the pre-loaded checklist.',
       '#type' => 'checkbox',
       '#states' => [
-        // Show this control the options require a custom species list to be chosen
+        // Show this control the options require a custom species list to be
+        // chosen.
+        'visible' => [
+          ':input[id="option_speciesListMode"]' => ['value' => 'scratchpadList'],
+        ],
+      ],
+    ],
+    'rowInclusionMode' => [
+      '#title' => 'Records are created for a row when',
+      '#description' => 'Determines the method used to determine whether a record is created for a row in the grid.',
+      '#type' => 'select',
+      '#options' => [
+        'checkbox' => 'The "Present" box is checked.',
+        'hasData' => 'The "Present" box is checked or if any of the attribute cells are filled in.',
+      ],
+      '#states' => [
+        // Show this control the options require a custom species list to be
+        // chosen.
         'visible' => [
           ':input[id="option_speciesListMode"]' => ['value' => 'scratchpadList'],
         ],
@@ -149,6 +167,9 @@ abstract class IndiciaSpeciesListBlockBase extends IndiciaControlBlockBase {
     if ($blockConfig['option_speciesListMode'] === 'scratchpadList' && empty($blockConfig["option_allowAdditionalSpecies"])) {
       // Disallow additional taxa row.
       $ctrlOptions['allowAdditionalTaxa'] = FALSE;
+    }
+    if ($blockConfig['option_speciesListMode'] === 'scratchpadList' && !empty($blockConfig['option_rowInclusionMode'])) {
+      $ctrlOptions['rowInclusionMode'] = $blockConfig['option_rowInclusionMode'];
     }
     if ($blockConfig['option_speciesListMode'] === 'empty' && $blockConfig['option_speciesToAddListType'] === 'scratchpadList') {
       // Empty list but results when searching need to be filtered.
