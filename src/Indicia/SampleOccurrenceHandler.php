@@ -197,6 +197,10 @@ class SampleOccurrenceHandler extends IndiciaRestClient {
    */
   public function getExistingSample($id, $formEntity) {
     $response = $this->getRestResponse("samples/$id", 'GET', NULL, ['verbose' => 1]);
+    if (isset($response['response']['code']) && $response['response']['code'] === 404) {
+      \Drupal::messenger()->addWarning($this->t('The existing sample could not be found, possibly because it has been deleted or was input by another user.'));
+      return;
+    }
     $sample = $response['response']['values'];
     \data_entry_helper::$entity_to_load = [];
     $this->copyEntityValueToLoadData($sample, 'smp', 'sample');
