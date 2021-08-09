@@ -121,6 +121,11 @@ abstract class IndiciaSpeciesListBlockBase extends IndiciaControlBlockBase {
         ],
       ],
     ],
+    'absenceColumn' => [
+      '#title' => 'Include an absence checkbox column',
+      '#description' => 'If checked, then an Absence checkbox is added to each row so the recorder can explicitly control which are records of absence.',
+      '#type' => 'checkbox',
+    ],
     'commentsColumn' => [
       '#title' => 'Allow comments for each record',
       '#type' => 'checkbox',
@@ -158,6 +163,7 @@ abstract class IndiciaSpeciesListBlockBase extends IndiciaControlBlockBase {
       'occurrenceImages' => isset($blockConfig["option_mediaColumn"]) && $blockConfig["option_mediaColumn"] === 1,
       'occurrenceSensitivity' => isset($blockConfig["option_sensitivityColumn"]) && $blockConfig["option_sensitivityColumn"] === 1,
       'lookupListId' => hostsite_get_config_value('iform', 'master_checklist_id', 0),
+      'absenceCol' => isset($blockConfig["option_absenceColumn"]) && $blockConfig["option_absenceColumn"] === 1,
     ];
     if ($blockConfig['option_speciesListMode'] === 'scratchpadList') {
       // Load the whole list, but the getPreloadScratchpadListControl will
