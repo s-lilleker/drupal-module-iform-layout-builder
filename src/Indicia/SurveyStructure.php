@@ -162,6 +162,46 @@ class SurveyStructure extends IndiciaRestClient {
   }
 
   /**
+   * Tidy required status on removed attributes.
+   *
+   * If an attribute is added to a form and removed, the attribute itself is
+   * not deleted in case there is existing data. In this case it is
+   * essential that any required validation on the attribute is removed.
+   *
+   * @param string $attrEntityName
+   *   Sample or occurrence.
+   * @param int $attrsWebsiteId
+   *   {entity}_sample_attributes_website_id for the record to update.
+   * @param string $caption
+   *   Caption used if any messages need to be shown to the user.
+   */
+  private function ensureUnlinkedAttrNotRequired($attrEntityName, $attrsWebsiteId, $caption) {
+    $config = \Drupal::config('iform.settings');
+    $submission = [
+      'values' => [
+        'website_id' => $config->get('website_id'),
+        'validation_rules' => NULL,
+      ],
+    ];
+    $endpoint = "{$attrEntityName}_attributes_websites/$attrsWebsiteId";
+    $response = $this->getRestResponse($endpoint, 'PUT', $submission);
+    if ($response['httpCode'] === 404) {
+      \Drupal::messenger()->addWarning(t(
+        "The \"@caption\" @type attribute originally added to this form had its survey validation settings set to required, so a value is expected. However as the attribute has been removed from the form it will prevent records being saved. The configuration needs to be corrected on the warehouse.",
+        ['@caption' => $caption, '@type' => $attrEntityName]
+      ));
+    }
+    elseif (!in_array($response['httpCode'], [200, 201])) {
+      \Drupal::logger('iform_layout_builder')->error('Failed to set unlinked attribute to not required.');
+      \Drupal::messenger()->addMessage(t(
+        'Failed to set unlinked attribute to not required: @status: @msg.',
+        ['@status' => $response['response']['status'], '@msg' => $response['response']['message']]
+      ));
+      throw new \Exception('Failed to set unlinked attribute to not required.');
+    }
+  }
+
+  /**
    * Ensures that all attributes required by an entity exist.
    */
   public function checkAttrsExists($entity) {
@@ -176,6 +216,11 @@ class SurveyStructure extends IndiciaRestClient {
     $sections = $entity->get('layout_builder__layout')->getSections();
     $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
     $attrAdmin = $user->hasPermission('administer indicia attributes');
+    // Tracking for attributes on the page, so we can detect removals.
+    $attrsOnLayout = [
+      'sample' => [],
+      'occurrence' => [],
+    ];
     foreach ($sections as $section) {
       $components = $section->getComponents();
       foreach ($components as $component) {
@@ -229,6 +274,7 @@ class SurveyStructure extends IndiciaRestClient {
               );
             }
             else {
+              $attrsOnLayout[$attrType][] = $blockConfig['option_existing_attribute_id'];
               // If user is has attribute admin rights then update the warehouse
               // attribute caption, description, validation rules etc.
               if ($attrAdmin) {
@@ -249,6 +295,18 @@ class SurveyStructure extends IndiciaRestClient {
             }
           }
         }
+      }
+    }
+    // Now, ensure any attributes that are in the survey but not on the layout
+    // (maybe removed) are not required.
+    foreach ($existingAttrs['sample'] as $existingAttr) {
+      if (!in_array($existingAttr['id'], $attrsOnLayout['sample']) && strpos($existingAttr['survey_validation_rules'], 'required') !== FALSE) {
+        $this->ensureUnlinkedAttrNotRequired('sample', $existingAttr['sample_attributes_website_id'], $existingAttr['caption']);
+      }
+    }
+    foreach ($existingAttrs['occurrence'] as $existingAttr) {
+      if (!in_array($existingAttr['id'], $attrsOnLayout['occurrence']) && strpos($existingAttr['survey_validation_rules'], 'required') !== FALSE) {
+        $this->ensureUnlinkedAttrNotRequired('occurrence', $existingAttr['occurrence_attributes_website_id'], $existingAttr['caption']);
       }
     }
   }
