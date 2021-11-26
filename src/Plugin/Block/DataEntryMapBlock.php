@@ -30,7 +30,7 @@ class DataEntryMapBlock extends IndiciaControlBlockBase {
         'google_satellite' => 'Google Satellite',
         'google_hybrid' => 'Google Hybrid',
         'google_physical' => 'Google Physical',
-        'dynamicOSGoogleSat' => 'Dynamic (OpenStreetMap > Google Satellite)',
+        'dynamicOSMGoogleSat' => 'Dynamic (OpenStreetMap > Google Satellite)',
       ];
     }
     if (!empty($config->get('os_api_key'))) {
