@@ -117,11 +117,17 @@ class SurveyStructure extends IndiciaRestClient {
       \Drupal::logger('iform_layout_builder')->error('Submission: ' . var_export($submission, TRUE));
       \Drupal::logger('iform_layout_builder')->error('Response: ' . var_export($response, TRUE));
       \Drupal::logger('iform_layout_builder')->error('BlockConfig: ' . var_export($blockConfig, TRUE));
-      \Drupal::messenger()->addMessage(t(
-        'Attribute update failed: @status: @msg.',
-        ['@status' => $response['response']['status'], '@msg' => $response['response']['message']]
-      ));
-      throw new \Exception('Failed to update an attribute.');
+      $explanation = t('Error information: @status: @msg', [
+        '@status' => $response['response']['status'],
+        '@msg' => isset($response['response']['message']) ? $response['response']['message'] : '',
+      ]);
+      if ($response['response']['message'] === 'Attempt to PUT or DELETE record from another website.') {
+        $explanation = 'This is because the attribute is being used by other surveys on the warehouse so cannot be updated.';
+      }
+      \Drupal::messenger()->addMessage(t('Updating attribute @label failed. @explanation', [
+        '@label' => $blockConfig['option_label'],
+        '@explanation' => $explanation,
+      ]));
     }
     return $response['response'];
   }
