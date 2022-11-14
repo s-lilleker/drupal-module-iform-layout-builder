@@ -27,7 +27,7 @@ class SampleOccurrenceHandler extends IndiciaRestClient {
     $values = array_merge($data, [
       'website_id' => $config->get('website_id'),
       'survey_id' => $entity->field_survey_id->value,
-      'sample:input_form' => trim(\Drupal::service('path.alias_manager')
+      'sample:input_form' => trim(\Drupal::service('path_alias.manager')
         ->getAliasByPath('/node/' . $entity->id()), '/'),
     ]);
     if ($isDeletion) {
